@@ -20,13 +20,16 @@ def get_rank(items):
 
 def main():
 	items = ['browseNum','editNum']
-	rank = get_rank(items)
-	for i in rank:
+	for rank in get_rank(items):
 		x = []
 		y = []
-		for j in i:
-			x.append(j[0])
-			y.append(j[1])
+		i = 0
+		for r in rank:
+			i += 1
+			print(str(i) + '\t' + r[0] + '\t\t' + str(r[1]))
+			x.append(r[0])
+			y.append(r[1])
+		print('')
 		wordcloud(x,y)
 		
 	print('Done!')
