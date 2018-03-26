@@ -4,7 +4,6 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-import json
 import datetime
 import pymysql
 
@@ -12,7 +11,6 @@ import pymysql
 class BaidubaikecitiaoPipeline(object):
     def __init__(self):
         dt = datetime.datetime.now()
-        self.file = open('./info/' + dt.strftime('%Y-%m-%d') + '.json', 'w+')
         self.conn = pymysql.connect(
             host='127.0.0.1', user='root', passwd='666666')
         self.conn.query('create database if not exists baidu_citiao  ')
@@ -34,16 +32,13 @@ class BaidubaikecitiaoPipeline(object):
         self.sql = 'insert into ' + self.table_name + '(name,browseNum,editNum,editUpdateTime) values("{name}","{browseNum}","{editNum}","{editUpdateTime}")'
 
     def process_item(self, item, spider):
-        it = dict(item)
-        self.file.write(json.dumps(it, ensure_ascii=False) + '\n')
         sql = self.sql.format(
-            name=it['name'],
-            browseNum=it['browseNum'],
-            editNum=it['editNum'],
-            editUpdateTime=it['editUpdateTime'])
+            name=item['name'],
+            browseNum=item['browseNum'],
+            editNum=item['editNum'],
+            editUpdateTime=item['editUpdateTime'])
         self.conn1.query(sql)
         self.conn1.commit()
 
     def close_spider(self, spider):
-        self.file.close()
         self.conn1.close()
